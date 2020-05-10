@@ -33,7 +33,14 @@ h2o.init(nthreads = -1)
 classificador = h2o.deeplearning(y = 'income', 
                                  training_frame = as.h2o(base_treinamento),
                                  activation = 'rectifier',
-                                 hidden = (100),
-                                 epochs = 100)
+                                 hidden = c(100),
+                                 epochs = 500)
 
 previsoes = h2o.predict(classificador, as.h2o(base_test[,-c(15)]))
+
+previsoes = (previsoes > 0.5)
+previsoes = as.vector(previsoes)
+matriz_confusao = table(base_test[,15], previsoes)
+
+library(caret)
+confusionMatrix(matriz_confusao)
